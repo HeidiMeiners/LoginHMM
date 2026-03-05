@@ -6,7 +6,9 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -50,12 +52,12 @@ class Home : AppCompatActivity() {
                 peliculas= ArrayList<Peliculas>()
 
                 val value = snapshot.value
-                Log.d("real-time-database", "Value is: " + value)
-                snapshot.children.forEach {
-                    unit ->
-                    var pelicula = Peliculas(unit.child("nombre").value.toString(),unit.child("genero").value.toString(),unit.child("anio").value.toString(),unit.key.toString())
+                println(value)
+                snapshot.children.forEach { unit ->
+                    var pelicula = Peliculas(unit.child("Nombre").value.toString(),unit.child("Genero").value.toString(),unit.child("Anio").value.toString(),unit.key.toString())
                     peliculas.add(pelicula)
                 }
+                llenaLista()
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -63,6 +65,15 @@ class Home : AppCompatActivity() {
             }
 
         })
+
+        val lista= findViewById<ListView>(R.id.lista)
+        lista.setOnItemClickListener{parent,view,position,id ->
+            startActivity(Intent(this, Detalle::class.java)
+                .putExtra("id",peliculas[position].id)
+                .putExtra("Nombre", peliculas[position].nombre)
+                .putExtra("Genero", peliculas[position].genero)
+                .putExtra("Anio", peliculas[position].anio))
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -73,9 +84,15 @@ class Home : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId==R.id.logout){
             auth.signOut()
+            startActivity(Intent(this,MainActivity::class.java))
             finish()
         }
         return super.onOptionsItemSelected(item)
     }
 
+    private fun llenaLista(){
+        val adaptador= PeliAdapter(this,peliculas)
+        val lista = findViewById<ListView>(R.id.lista)
+        lista.adapter=adaptador
+    }
 }

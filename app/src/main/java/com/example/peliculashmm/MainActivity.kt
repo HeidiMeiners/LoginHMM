@@ -3,6 +3,7 @@ package com.example.peliculashmm
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,8 @@ import com.google.firebase.auth.auth
 class MainActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
+    lateinit var emailEditable: EditText
+    lateinit var passwordEditable: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,10 +30,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         auth = Firebase.auth
+
+        emailEditable = findViewById<EditText>(R.id.emailEditable)
+        passwordEditable = findViewById<EditText>(R.id.passwordEditable)
     }
 
+    //"heidi@heidi.com","heidi123"
     fun login(view: View){
-        auth.signInWithEmailAndPassword("heidi@heidi.com","heidi123").addOnCompleteListener { task ->
+        val email = emailEditable.text.toString().trim()
+        val password = passwordEditable.text.toString().trim()
+        auth.signInWithEmailAndPassword(email,password).addOnCompleteListener { task ->
             if(task.isSuccessful){
                 Toast.makeText(this,"login exitoso",Toast.LENGTH_LONG).show()
                 startActivity(Intent(this,Home::class.java).putExtra("email",task.result.user?.email.toString()))
@@ -47,7 +56,9 @@ class MainActivity : AppCompatActivity() {
         val usuarioActual = Firebase.auth.currentUser
 
         if(usuarioActual!=null){
+            startActivity(Intent(this,Home::class.java))
             Toast.makeText(this,"Usuario previemante autenticado",Toast.LENGTH_LONG).show()
+            finish()
         }
     }
 }
