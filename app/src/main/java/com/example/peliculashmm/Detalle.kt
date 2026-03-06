@@ -1,5 +1,6 @@
 package com.example.peliculashmm
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -37,9 +38,9 @@ class Detalle : AppCompatActivity() {
             val nuevoAnio = findViewById<EditText>(R.id.anio).text.toString()
 
             val actualizacion = HashMap<String, Any>()
-            actualizacion["Nombre"] = nuevoNombre
-            actualizacion["Genero"] = nuevoGenero
-            actualizacion["Anio"] = nuevoAnio
+            actualizacion["nombre"] = nuevoNombre
+            actualizacion["genero"] = nuevoGenero
+            actualizacion["anio"] = nuevoAnio
 
             myRef.child(id).updateChildren(actualizacion)
                 .addOnSuccessListener {
@@ -50,6 +51,15 @@ class Detalle : AppCompatActivity() {
                     Toast.makeText(this, "Error al actualizar", Toast.LENGTH_SHORT).show()
                 }
         }
+
+        val eliminar= findViewById<Button>(R.id.eliminar)
+        eliminar.setOnClickListener {
+            myRef.child(id).removeValue()
+            Toast.makeText(this,"Pelicula eliminada", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, Home::class.java))
+            finish()
+        }
+
     }
 
 }

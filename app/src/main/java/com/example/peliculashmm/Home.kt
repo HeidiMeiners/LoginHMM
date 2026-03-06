@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -54,7 +56,7 @@ class Home : AppCompatActivity() {
                 val value = snapshot.value
                 println(value)
                 snapshot.children.forEach { unit ->
-                    var pelicula = Peliculas(unit.child("Nombre").value.toString(),unit.child("Genero").value.toString(),unit.child("Anio").value.toString(),unit.key.toString())
+                    var pelicula = Peliculas(unit.child("nombre").value.toString(),unit.child("genero").value.toString(),unit.child("anio").value.toString(),unit.key.toString())
                     peliculas.add(pelicula)
                 }
                 llenaLista()
@@ -73,6 +75,11 @@ class Home : AppCompatActivity() {
                 .putExtra("Nombre", peliculas[position].nombre)
                 .putExtra("Genero", peliculas[position].genero)
                 .putExtra("Anio", peliculas[position].anio))
+        }
+
+        val agregar=findViewById<FloatingActionButton>(R.id.agregarHome)
+        agregar.setOnClickListener {
+            startActivity(Intent(this, Agregar::class.java))
         }
     }
 
